@@ -1,0 +1,6 @@
+numpy
+scapy
+tensorflow
+keras
+scipy
+rich
