@@ -7,7 +7,7 @@ Repo for Early Tool
 It requires 3.8+ version of Python.
 
 ```sh
-git clone https://gitlab.abo.fi/veridevops/earlytool
+git clone https://github.com/VeriDevOps/Earlytool.git
 cd earlytool
 pip install -r requirement.txt
 ```
