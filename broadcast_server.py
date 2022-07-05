@@ -3,8 +3,6 @@ import bisect
 import cherrypy
 
 
-# https://stackoverflow.com/questions/18127415/non-blocking-cherrypy-does-not-receive-anything
-# https://stackoverflow.com/questions/7254845/change-cherrypy-port-and-restart-web-server
 
 @cherrypy.expose
 class BroadcastWebService(object):
@@ -53,22 +51,6 @@ class BroadcastWebService(object):
         # print(flows)
         return results
 
-    '''
-    def POST(self, length=8):
-        some_string = ''.join(random.sample(string.hexdigits, int(length)))
-        cherrypy.session['mystring'] = some_string
-        return some_string
-    '''
-
-    # @cherrypy.tools.json_in()
-    # def PUT(self, data):
-    #     # cherrypy.session['mystring'] = another_string
-    #     try:
-    #         message = loads(data)
-    #     except Exception:
-    #         self.logger.exception("SlaveUpdate parsing ERROR, Message: {}".format(data))
-    #     else:
-    #         BroadcastWebService.latest_update[message['slave_name']] = message
 
 
 class BroadcastServer:
