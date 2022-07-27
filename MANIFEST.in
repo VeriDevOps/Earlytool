@@ -1,0 +1,7 @@
+include MANIFEST.in
+include LICENSE
+include display.py
+include monitor.py
+include early/classifier/*.h5
+include example_pcap/*.*
+include doc_images/*.*

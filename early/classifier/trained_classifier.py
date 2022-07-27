@@ -1,14 +1,14 @@
 import numpy as np
-from pathlib import Path
 from keras.models import load_model
-from classifier import BaseClassifier
+
+from early.classifier.base import BaseClassifier
 
 
 class EarlyClassifier(BaseClassifier):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.model = load_model(self.current_dir / "model_random.h5")
+        self.model = load_model(self.current_dir / "model_1dcnn_0604-134012_7.h5")
         self.max_header_size = 48
         self.max_payload_size = 400
         self.padding_position = "post"

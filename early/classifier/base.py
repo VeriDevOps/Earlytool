@@ -4,7 +4,6 @@ import numpy as np
 from abc import ABC, abstractmethod
 from pathlib import Path
 from scapy.all import *
-from keras.models import load_model
 from keras.preprocessing.sequence import pad_sequences
 
 

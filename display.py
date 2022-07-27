@@ -1,15 +1,26 @@
-import argparse
+import cloup
 
-from cli_display import CLIDisplay
+from early.display.cli_display import Display
 
 
-def main(args):
-    display = CLIDisplay(
-        args.url_early,
-        args.warning_threshold,
-        args.alert_threshold,
-        args.refresh_millisecond,
-        args.show_flows,
+@cloup.command()
+@cloup.option("-u", "--url-early", type=str, default="0.0.0.0:9400",
+              help="URL endpoint to get updates from Early tool. E.g., 0.0.0.0:9400 (default)")
+@cloup.option("-w", "--warning-threshold", type=cloup.FloatRange(min=0, max=100), default=40.0,
+              help="Warning threshold from 0 to 100. E.g., 40.0 (default)")
+@cloup.option("-a", "--alert-threshold", type=cloup.FloatRange(min=0, max=100), default=40.0,
+              help="Alert threshold from 0 to 100. E.g., 40.0 (default)")
+@cloup.option("-r", "--refresh-millisecond", type=int, default=250,
+              help="Refresh results after every r milliseconds. E.g., 250 (default)")
+@cloup.option("-s", "--show-flows", type=int, default=100,
+              help="Maximum number of flows to display.")
+def main(url_early, warning_threshold, alert_threshold, refresh_millisecond, show_flows):
+    display = Display(
+        url_early,
+        warning_threshold,
+        alert_threshold,
+        refresh_millisecond,
+        show_flows,
     )
 
     try:
@@ -19,60 +30,4 @@ def main(args):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-
-    parser.add_argument(
-        "-u",
-        "--url",
-        action="store",
-        dest="url_early",
-        default="0.0.0.0:9400",
-        help="URL endpoint to get updates from Early tool. e.g 0.0.0.0:9400 (default)",
-    )
-
-    parser.add_argument(
-        "-s"
-        "--show_flows",
-        action="store",
-        dest="show_flows",
-        default=100,
-        type=int,
-        help="Maximum number of flows to display.",
-    )
-
-    parser.add_argument(
-        "-w",
-        action="store",
-        dest="warning_threshold",
-        default=40.0,
-        type=float,
-        help="Warning threshold. E.g., 40.0 (default)",
-    )
-
-    parser.add_argument(
-        "-a",
-        action="store",
-        dest="alert_threshold",
-        default=60.0,
-        type=float,
-        help="Alert threshold. E.g., 60.0 (default)",
-    )
-
-    parser.add_argument(
-        "-r",
-        action="store",
-        dest="refresh_millisecond",
-        default=250,
-        type=int,
-        help="Refresh results after every r milliseconds. E.g., 250 (default)",
-    )
-
-    # parser.add_argument(
-    #     "--output",
-    #     default=f"output_{time.strftime('%d%m-%H%M%S')}.csv",
-    #     help="output file name (in flow mode) or directory (in sequence mode)",
-    # )
-
-    args = parser.parse_args()
-
-    main(args)
+    main()
