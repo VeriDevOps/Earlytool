@@ -33,11 +33,11 @@ class Display(BaseDisplay):
     def update_flows(self, data):
         latest = []
         self.last_time_updated = data["latest_timestamp"]
-        for k, d in data["flows"]:
-            tuple_k = (tuple(k[0]), k[1])
-            latest.append(d["name"])
-            d["prediction"][0] = float(d["prediction"][0])
-            self.latest_n_flows.put(tuple_k, d)
+        for f in data["flows"]:
+            name = f["name"]
+            latest.append(name)
+            f["prediction"][0] = float(f["prediction"][0])
+            self.latest_n_flows.put(name, f)
         return latest
 
     def start(self):

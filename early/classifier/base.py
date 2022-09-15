@@ -3,8 +3,11 @@ os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 import numpy as np
 from abc import ABC, abstractmethod
 from pathlib import Path
+
+import tensorflow as tf
+from tensorflow.python.framework.errors_impl import UnimplementedError
+from tensorflow.keras.preprocessing.sequence import pad_sequences
 from scapy.all import *
-from keras.preprocessing.sequence import pad_sequences
 
 
 class BaseClassifier(ABC):
@@ -14,37 +17,25 @@ class BaseClassifier(ABC):
         self.max_payload_size = 400
         self.padding_position = "post"
         self.label_code = []
+        self.can_use_gpu = len(tf.config.list_physical_devices('GPU')) > 0
         self.current_dir = Path(__file__).parent.resolve()
 
     def process_flow(self, packets):
-        # hp = pad_sequences(
-        #     [list(p[0][TCP].raw_packet_cache) for p in packets], maxlen=self.max_header_size,
-        #     dtype='float16', padding=self.padding_position,
-        #     truncating=self.padding_position, value=0.0
-        # )
-        #
-        # packets_payload = []
-        # for p, _ in packets:
-        #     if p.haslayer(Raw):
-        #         payload = list(bytes(p[TCP].payload))
-        #     else:
-        #         payload = []
-        #     packets_payload.append(payload)
-
         packets_header = []
         packets_payload = []
 
         for packet, _ in packets:
-            header = []
+            # header = []
             payload = []
             if packet.haslayer(TCP):
-                header = list(packet[TCP].raw_packet_cache)[:self.max_header_size]
-                if packet.haslayer(Raw):
-                    payload = list(bytes(packet[TCP].payload))[:self.max_payload_size]
+                packet_type = TCP
             elif packet.haslayer(UDP):
-                header = list(packet[UDP].raw_packet_cache)[:self.max_header_size]
-                if packet.haslayer(Raw):
-                    payload = list(bytes(packet[UDP].payload))[:self.max_payload_size]
+                packet_type = UDP
+
+            header = list(packet[packet_type].raw_packet_cache)[:self.max_header_size]
+            if packet.haslayer(Raw):
+                payload = list(bytes(packet[packet_type].payload))[:self.max_payload_size]
+
             packets_header.append(header)
             packets_payload.append(payload)
 
@@ -75,6 +66,18 @@ class BaseClassifier(ABC):
         # Adding a batch dimension
         processed_flow = np.expand_dims(processed_flow, axis=0)
 
-        score = self.model.predict(processed_flow)
+        if self.can_use_gpu:
+            try:
+                score = self.model.predict(processed_flow)
+            except UnimplementedError:
+                # if the gpu is being used for something else
+                print("WARNING: Cannot use GPU. Now using CPU for predictions")
+                self.can_use_gpu = False
+                with tf.device('/cpu:0'):
+                    score = self.model.predict(processed_flow)
+        else:
+            with tf.device('/cpu:0'):
+                score = self.model.predict(processed_flow)
+
         prediction = (self.get_confidence(score), self.get_label(score))
         return prediction
