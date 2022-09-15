@@ -2,20 +2,20 @@ import sys
 
 try:
     from setuptools import setup, find_packages
-except:
-    raise ImportError("setuptools is required to install earlytool !")
+except Exception:
+    raise ImportError("setuptools is required to install Earlytool!")
 import io
 import os
 
 # Package meta-data.
-NAME = "earlytool"
+NAME = "Earlytool"
 DESCRIPTION = "Earlytool: An Early NIDS"
 URL = "https://gitlab.abo.fi/veridevops-public/earlytool"
 EMAIL = "tahmad@abo.fi"
 AUTHOR = "Tanwir Ahmad"
 REQUIRES_PYTHON = ">=3.6.0"
 GIT_REPO_LIBS = [
-    "cicflowmeter @ git+https://gitlab.abo.fi/tahmad/cicflowmeter-py.git@v1.0.0"
+    "cicflowmeter @ git+https://gitlab.abo.fi/tahmad/cicflowmeter-py.git@py36"
 ]
 VERSION = None
 
@@ -92,8 +92,6 @@ setup(
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
-        "Programming Language :: Python :: 3.10",
         "Topic :: Security",
         "Topic :: System :: Networking",
         "Topic :: System :: Networking :: Monitoring",

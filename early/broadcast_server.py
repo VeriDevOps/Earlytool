@@ -19,13 +19,14 @@ class BroadcastWebService(object):
     def update_flows(self):
         try:
             while True:
-                key, f = self.queue.pop()
-                self.flow_storage[key] = f
+                f = self.queue.pop()
+                name = f["name"]
+                self.flow_storage[name] = f
                 try:
-                    del self.flow_timestamp[key]
+                    del self.flow_timestamp[name]
                 except KeyError:
                     pass
-                self.flow_timestamp[key] = time.time()
+                self.flow_timestamp[name] = time.time()
         except IndexError:
             pass
 
@@ -34,7 +35,7 @@ class BroadcastWebService(object):
         recent_keys = list(self.flow_timestamp.keys())[i:]
         flows = []
         for k in recent_keys:
-            flows.append((k, self.flow_storage[k]))
+            flows.append(self.flow_storage[k])
         return flows
 
     @cherrypy.tools.json_out()
@@ -52,23 +53,6 @@ class BroadcastWebService(object):
         results = {"flows": flows, "latest_timestamp": latest_ts}
         # print(flows)
         return results
-
-    '''
-    def POST(self, length=8):
-        some_string = ''.join(random.sample(string.hexdigits, int(length)))
-        cherrypy.session['mystring'] = some_string
-        return some_string
-    '''
-
-    # @cherrypy.tools.json_in()
-    # def PUT(self, data):
-    #     # cherrypy.session['mystring'] = another_string
-    #     try:
-    #         message = loads(data)
-    #     except Exception:
-    #         self.logger.exception("SlaveUpdate parsing ERROR, Message: {}".format(data))
-    #     else:
-    #         BroadcastWebService.latest_update[message['slave_name']] = message
 
 
 class BroadcastServer:

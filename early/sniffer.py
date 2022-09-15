@@ -22,19 +22,19 @@ def get_classifier_path(classifier_path):
 
 
 def create_sniffer(
-        input_file, input_interface, output_mode, classifier_module, flow_deque, sniffing_delay,
+        input_file, input_interface, output_mode, classifier_module, flow_deque, sniffing_delay, per_packet
 ):
     assert (input_file is None) ^ (input_interface is None)
 
     classifier_path = get_classifier_path(classifier_module)
-    if not os.path.exists(classifier_path):
-        print(f"=== Error: classifier module does not exist: {classifier_path}")
+    if classifier_path is None or (not os.path.exists(classifier_path)):
+        print(f"=== Error: classifier module, {classifier_module}, does not exist: {classifier_path}")
         sys.exit()
 
     print(f"Using classifier module: {classifier_path}")
 
     NewFlowSession = generate_session_class(
-        output_mode, classifier_path, flow_deque, sniffing_delay)()
+        output_mode, classifier_path, flow_deque, sniffing_delay, per_packet)()
 
     if input_file is not None:
         if not os.path.exists(input_file):
@@ -43,7 +43,7 @@ def create_sniffer(
 
         return AsyncSniffer(
             offline=input_file,
-            # filter="ip and (tcp or udp)",
+            filter="ip and (tcp or udp)",
             prn=None,
             session=NewFlowSession,
             store=False,
@@ -51,8 +51,8 @@ def create_sniffer(
     else:
         return AsyncSniffer(
             iface=input_interface,
-            # filter="ip and (tcp or udp)",
-            filter="ip and tcp",
+            filter="ip and (tcp or udp)",
+            # filter="ip and tcp",
             prn=None,
             session=NewFlowSession,
             store=False,
