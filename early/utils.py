@@ -1,10 +1,38 @@
 import uuid
-from collections import UserDict
+from collections import UserDict, deque
 from statistics import mean, pstdev
 from itertools import islice, zip_longest
 
 
 class DequeDict(UserDict):
+
+    def __init__(self, *args, **kwargs):
+        self.maxlen = kwargs.pop("maxlen", 0)
+        self.ordered_keys = deque()
+        super().__init__(*args, **kwargs)
+
+    def put(self, key, value):
+        if key in self.data:
+            # If we already have an old flow with the key,
+            # then we remove it to make room for the recent one
+            del self.data[key]
+            self.ordered_keys.remove(key)
+        elif 0 < self.maxlen <= len(self.ordered_keys):
+            # We didn't find that flow
+            # If the Queue is full, we remove an item in LIFO order
+            least_key = self.ordered_keys.pop()
+            del self.data[least_key]
+
+        self.data[key] = value
+        # Move the flow to the top
+        self.ordered_keys.appendleft(key)
+
+
+class UnusedDequeDict(UserDict):
+    """
+    This class is replaced by the DequeDict class above because it can only be used
+    with Python 3.8+ versions where the dictionary keys are stored in order.
+    """
 
     def __init__(self, *args, **kwargs):
         self.maxlen = kwargs.pop("maxlen", 0)

@@ -19,11 +19,13 @@ from early.sniffer import create_sniffer
               type=cloup.Path(file_okay=True, readable=True), multiple=False)
 @cloup.option("-d", "--delay-millisecond", type=int, default=0, multiple=False, show_default=True,
               help="Add a delay of d milliseconds after sniffing every packet.")
+@cloup.option("-k", "--keep-flows", type=int, default=None,
+              help="Maximum number of most recent flows to keep in memory. [default: unlimited]")
 @cloup.option("-p", "--per-packet", is_flag=True,
               help="Get a prediction per packet instead of per flow.")
 @cloup.version_option(version=__version__)
-def main(interface, pfile, classifier, delay_millisecond, per_packet):
-    flow_deque = deque(maxlen=100)
+def main(interface, pfile, classifier, delay_millisecond, keep_flows, per_packet):
+    flow_deque = deque(maxlen=keep_flows)
 
     sniffer = create_sniffer(
         pfile,

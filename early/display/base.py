@@ -30,17 +30,17 @@ class BaseDisplay:
             except requests.exceptions.ConnectionError:
                 if self.just_started:
                     if not msg_printed:
-                        print(f"Waiting for Early tool to start at {self.early_host} ...")
+                        print(f"Waiting for the Early tool to start at {self.early_host} ...")
                         msg_printed = True
                     time.sleep(1)
                 else:
-                    print(f"Early tool at {self.early_host} is stopped.")
+                    print(f"Early at {self.early_host} is stopped.")
                     break
 
         self.just_started = False
         if is_early_okay:
             if r.status_code != 200:
-                print(f"Early tool's response status code is not 200. It is {r.status_code}.")
+                print(f"Response status code from Early is not 200. It is {r.status_code}.")
                 is_early_okay = False
             else:
                 data = r.json()

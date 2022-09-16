@@ -1,5 +1,4 @@
 import time
-# from rich.console import Console
 from rich.live import Live
 from rich.table import Table, Column
 
@@ -60,7 +59,7 @@ class Display(BaseDisplay):
                         title=f"Flows count: {len(self.latest_n_flows)}",
                     )
 
-                    for k in reversed(self.latest_n_flows.data):
+                    for k in self.latest_n_flows.ordered_keys:
                         f = self.latest_n_flows[k]
                         style = self.get_row_style(f['prediction'])
                         # print(f"[{remarks}]{f.name}")
