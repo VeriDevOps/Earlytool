@@ -1,5 +1,6 @@
 import sys
 import time
+import logging
 import importlib.util
 from pathlib import Path
 
@@ -9,6 +10,8 @@ from cicflowmeter.flow_session import FlowSession
 
 from early.early_flow import EarlyFlow
 
+logger = logging.getLogger("earlytool-monitor")
+
 
 class EarlyFlowSession(FlowSession):
     """Creates a list of network flows."""
@@ -16,9 +19,9 @@ class EarlyFlowSession(FlowSession):
     def __init__(self, *args, **kwargs):
         super(EarlyFlowSession, self).__init__(*args, **kwargs)
         self.last_flow_updated = None
-
+        self.__csv_file_path = None
         if self.per_packet:
-            print("Get per packet prediction")
+            logger.info("Getting per packet predictions ...")
 
         self.classifier = self.load_classifier()
 
@@ -29,6 +32,15 @@ class EarlyFlowSession(FlowSession):
         sys.modules[module_name] = module
         spec.loader.exec_module(module)
         return module.EarlyClassifier()
+
+    @property
+    def csv_file_path(self):
+        if self.__csv_file_path is None:
+            # Defining the path of the CSV file
+            self.__csv_file_path = self.output_directory / f"flows_{time.strftime('%m%d-%H%M%S')}.csv"
+
+            logger.info(f"Dumping flows to {self.__csv_file_path}")
+        return self.__csv_file_path
 
     def on_packet_received(self, packet):
         if self.per_packet:
@@ -50,7 +62,9 @@ class EarlyFlowSession(FlowSession):
         # If there is flow
         if result_tup:
             flow, _ = result_tup
-            print(f"No. of packets analyzed: {self.packets_count}", end="\r")
+
+            if logger.isEnabledFor(logging.INFO):
+                print(f"No. of packets analyzed: {self.packets_count}", end="\r")
             # print(f"Packets {self.packets_count}")
 
             flow.model_prediction = self.classifier.predict(flow.packets)
@@ -63,12 +77,15 @@ class EarlyFlowSession(FlowSession):
         return result_tup
 
 
-def generate_session_class(output_mode, classifier_path, flow_deque, sniffing_delay, per_packet):
+def generate_session_class(output_mode, dump_incomplete_flows, nb_workers,
+                           classifier_path, flow_deque, sniffing_delay, per_packet):
     return type(
         "NewFlowSession",
         (EarlyFlowSession,),
         {
             "output_mode": output_mode,
+            "dump_incomplete_flows": dump_incomplete_flows,
+            "nb_workers": nb_workers,
             # "output_file": output_file,
             "flow_class": EarlyFlow,
             "classifier_module": classifier_path,

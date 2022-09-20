@@ -7,7 +7,7 @@ Repo for Early Tool
 It requires 3.6+ version of Python.
 
 ```sh
-git clone https://gitlab.abo.fi/veridevops/earlytool
+git clone https://gitlab.abo.fi/veridevops-public/earlytool
 cd earlytool
 python setup.py install
 ```
@@ -22,20 +22,23 @@ This component reads packets either from a PCAP file or a network interface. It 
 Usage: early_monitor [OPTIONS]
 
 Options:
-  -i, --interface TEXT   Analyze live data from the network interface.
-  -f, --pfile PATH       Analyze data from a PCAP file.
-  -c, --classifier PATH  Path to a classifier python module that will be used
-                         for making predictions. If the module exists in the
-                         early/classifier folder, then just provide the name of
-                         module without '.py', e.g., random_classifier
-                         (default).
+  -i, --interface TEXT      Analyze live data from the network interface.
+  -f, --pfile FILE          Analyze data from a PCAP file.
+  -c, --classifier FILE     Path to a classifier python module that will be used for making predictions. If the module exists in the early/classifier folder, then just provide the name of module without '.py'.  [default: random_classifier]
+  -o, --output-csv          output completed flows as csv
+  --in                      Dump incomplete flows to the csv file before existing the program.
+  -w, --workers INTEGER     No. of workers are used to write flows to a CSV file. [default: 2]
   -d, --delay-millisecond INTEGER
-                         Add a delay of d milliseconds after sniffing a packet.
-                         E.g., 0 (default) means no delay.
-  --help                 Show this message and exit.
+                            Add a delay of d milliseconds after sniffing every
+                            packet.  [default: 0]
+  -k, --keep-flows INTEGER  Maximum number of most recent flows to keep in memory. [default: unlimited]
+  -p, --per-packet          Get a prediction per packet instead of per flow.
+  --version                 Show the version and exit.
+  --help                    Show this message and exit.
 
 Constraints:
   {--interface, --pfile}  exactly 1 required
+  {--output-csv}           if either --in or --workers is set
 ```
 
 Read packets from a PCAP file:
@@ -55,18 +58,15 @@ This component fetches results from the monitor and displays flows in the comman
 Usage: early_display [OPTIONS]
 
 Options:
-  -u, --url-early TEXT      URL endpoint to get updates from Early tool. E.g.,
-                            0.0.0.0:9400 (default)
+  -u, --url-early TEXT      URL endpoint to get updates from Early tool. [default: 0.0.0.0:9400]
   -w, --warning-threshold FLOAT RANGE
-                            Warning threshold from 0 to 100. E.g., 40.0
-                            (default)  [0<=x<=100]
+                            Warning threshold from 0 to 100 w.r.t. the confidence score.  [default: 40.0; 0<=x<=100]
   -a, --alert-threshold FLOAT RANGE
-                            Alert threshold from 0 to 100. E.g., 40.0 (default)
-                            [0<=x<=100]
+                            Alert threshold from 0 to 100 w.r.t. the confidence score.  [default: 50.0; 0<=x<=100]
   -r, --refresh-millisecond INTEGER
-                            Refresh results after every r milliseconds. E.g.,
-                            250 (default)
-  -s, --show-flows INTEGER  Maximum number of flows to display.
+                            Refresh results after every r milliseconds. [default: 250]
+  -s, --show-flows INTEGER  Maximum number of flows to display.  [default: 100]
+  --version                 Show the version and exit.
   --help                    Show this message and exit.
 ```
 

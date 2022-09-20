@@ -1,6 +1,9 @@
 import time
+import logging
 import bisect
 import cherrypy
+
+logger = logging.getLogger("earlytool-monitor")
 
 
 # https://stackoverflow.com/questions/18127415/non-blocking-cherrypy-does-not-receive-anything
@@ -14,7 +17,6 @@ class BroadcastWebService(object):
         self.queue = queue
         self.flow_storage = {}
         self.flow_timestamp = {}
-        # self.logger = logging.getLogger("master")
 
     def update_flows(self):
         try:
@@ -66,7 +68,7 @@ class BroadcastServer:
             'global': {
                 'server.socket_host': self.ip,
                 'server.socket_port': self.port,
-                'tools.log_headers.on': False,
+                # 'tools.log_headers.on': False,
                 'log.screen': False,
                 # 'request.show_tracebacks': False,
                 # 'request.show_mismatched_params': False,
@@ -86,7 +88,12 @@ class BroadcastServer:
         web_server = BroadcastWebService(self.queue)
         cherrypy.tree.mount(web_server, "/status", config=conf)
 
-        print(f"Broadcast web server is running at port http://localhost:{self.port}")
+        # Disabling Cherrypy log https://stackoverflow.com/a/31707202/6551880
+        cherrypy.log.access_log.propagate = False
+        cherrypy.log.error_log.propagate = False
+
+        logger.info(f"Broadcast web server is running at port http://localhost:{self.port}")
+        cherrypy.engine.signal_handler.subscribe()
         cherrypy.engine.start()
 
     def stopServer(self):

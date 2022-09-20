@@ -1,9 +1,12 @@
 import os
 import sys
+import logging
 from pathlib import Path
 from scapy.sendrecv import AsyncSniffer
 
 from early.early_flow_session import generate_session_class
+
+logger = logging.getLogger("earlytool-monitor")
 
 
 def get_classifier_path(classifier_path):
@@ -22,23 +25,24 @@ def get_classifier_path(classifier_path):
 
 
 def create_sniffer(
-        input_file, input_interface, output_mode, classifier_module, flow_deque, sniffing_delay, per_packet
+        input_file, input_interface, output_mode, dump_incomplete_flows, nb_workers,
+        classifier_module, flow_deque, sniffing_delay, per_packet
 ):
     assert (input_file is None) ^ (input_interface is None)
 
     classifier_path = get_classifier_path(classifier_module)
     if classifier_path is None or (not os.path.exists(classifier_path)):
-        print(f"=== Error: classifier module, {classifier_module}, does not exist: {classifier_path}")
+        logger.error(f"Classifier module, {classifier_module}, does not exist: {classifier_path}")
         sys.exit()
 
-    print(f"Using classifier module: {classifier_path}")
+    logger.info(f"Using classifier module: {classifier_path}")
 
     NewFlowSession = generate_session_class(
-        output_mode, classifier_path, flow_deque, sniffing_delay, per_packet)()
+        output_mode, dump_incomplete_flows, nb_workers, classifier_path, flow_deque, sniffing_delay, per_packet)()
 
     if input_file is not None:
         if not os.path.exists(input_file):
-            print(f"=== Error: PCAP file does not exist: {input_file}")
+            logger.error(f"PCAP file does not exist: {input_file}")
             sys.exit()
 
         return AsyncSniffer(

@@ -1,5 +1,7 @@
 import os
+from typing import Tuple
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
+import logging
 import numpy as np
 from abc import ABC, abstractmethod
 from pathlib import Path
@@ -8,6 +10,9 @@ import tensorflow as tf
 from tensorflow.python.framework.errors_impl import UnimplementedError
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from scapy.all import *
+
+
+logger = logging.getLogger("earlytool-monitor")
 
 
 class BaseClassifier(ABC):
@@ -53,14 +58,14 @@ class BaseClassifier(ABC):
         return x
 
     @abstractmethod
-    def get_confidence(self, score):
+    def get_confidence(self, score) -> float:
         raise NotImplementedError("Must override get_confidence")
 
     @abstractmethod
-    def get_label(self, score):
+    def get_label(self, score) -> str:
         return self.label_code[np.argmax(score)]
 
-    def predict(self, flow_packets):
+    def predict(self, flow_packets) -> Tuple[float, str]:
         processed_flow = self.process_flow(flow_packets)
 
         # Adding a batch dimension
@@ -71,7 +76,7 @@ class BaseClassifier(ABC):
                 score = self.model.predict(processed_flow)
             except UnimplementedError:
                 # if the gpu is being used for something else
-                print("WARNING: Cannot use GPU. Now using CPU for predictions")
+                logger.warning("Cannot use GPU. Using CPU for predictions.")
                 self.can_use_gpu = False
                 with tf.device('/cpu:0'):
                     score = self.model.predict(processed_flow)
