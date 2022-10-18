@@ -1,6 +1,6 @@
 import cloup
 import logging
-from cloup.constraints import If, AnySet, require_one
+from cloup.constraints import If, IsSet, require_one
 from collections import deque
 
 from early import __version__
@@ -39,7 +39,7 @@ cic_logger.setLevel(logging.WARNING)
               help="Maximum number of most recent flows to keep in memory. [default: unlimited]")
 @cloup.option("-p", "--per-packet", is_flag=True,
               help="Get a prediction per packet instead of per flow.")
-@cloup.constraint(If(AnySet('dump_incomplete_flows', 'workers'), then=require_one.hidden()), ['output_csv', ])
+@cloup.constraint(If(IsSet('dump_incomplete_flows'), then=require_one.hidden()), ['output_csv', ])
 @cloup.version_option(version=__version__)
 def main(
         interface, pfile, classifier, output_csv, dump_incomplete_flows, workers,

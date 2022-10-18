@@ -1,6 +1,8 @@
+requests
+protobuf==3.19.5
 numpy==1.19.5
 scapy==2.4.5
-tensorflow>=2.6.2
+tensorflow==2.6.2
 scipy>=1.5.4
 rich>=12
 cloup>=0.15.1

@@ -41,6 +41,8 @@ Constraints:
   {--output-csv}           if either --in or --workers is set
 ```
 
+**PS:** On linux systems you may need to install the `libpcap` library and `tcpdump` software. On Windows, you need to install [Npcap](https://npcap.com/#download) and [WinDump](https://github.com/hsluoyz/WinDump/releases) to run the monitor.
+
 Read packets from a PCAP file:
 ```sh
 early_monitor -f /home/user/earlytool/example_pcap/traffic_5f_ni.pcap
