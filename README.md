@@ -28,9 +28,9 @@ Options:
   -o, --output-csv          output completed flows as csv
   --in                      Dump incomplete flows to the csv file before existing the program.
   -w, --workers INTEGER     No. of workers are used to write flows to a CSV file. [default: 2]
+  -t, --flow-timeout FLOAT  Specify the maximum duration in seconds as the flow timeout.  [default: 120.0]
   -d, --delay-millisecond INTEGER
-                            Add a delay of d milliseconds after sniffing every
-                            packet.  [default: 0]
+                            Add a delay of d milliseconds after sniffing every packet.  [default: 0]
   -k, --keep-flows INTEGER  Maximum number of most recent flows to keep in memory. [default: unlimited]
   -p, --per-packet          Get a prediction per packet instead of per flow.
   --version                 Show the version and exit.
@@ -38,7 +38,7 @@ Options:
 
 Constraints:
   {--interface, --pfile}  exactly 1 required
-  {--output-csv}           if either --in or --workers is set
+  {--output-csv}           if --in is set
 ```
 
 **PS:** On linux systems you may need to install the `libpcap` library and `tcpdump` software. On Windows, you need to install [Npcap](https://npcap.com/#download) and [WinDump](https://github.com/hsluoyz/WinDump/releases) to run the monitor.

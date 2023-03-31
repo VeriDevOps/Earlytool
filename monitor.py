@@ -32,7 +32,9 @@ cic_logger.setLevel(logging.WARNING)
 # @cloup.option("--dir", "output_directory", help="output directory (in csv mode). [default: current directory]",
 #               default=str(Path.cwd()), type=cloup.Path(file_okay=False, exists=True, writable=True), multiple=False)
 @cloup.option("-w", "--workers", type=int, default=2, multiple=False, show_default=True,
-              help="No. of workers to write flows to a CSV file.")
+              help="No. of workers are used to write flows to a CSV file.")
+@cloup.option("-t", "--flow-timeout", "flow_timeout", type=float, default=120.0, multiple=False, show_default=True,
+              help="Specify the maximum duration in seconds as the flow timeout.")
 @cloup.option("-d", "--delay-millisecond", type=int, default=0, multiple=False, show_default=True,
               help="Add a delay of d milliseconds after sniffing every packet.")
 @cloup.option("-k", "--keep-flows", type=int, default=None,
@@ -42,7 +44,7 @@ cic_logger.setLevel(logging.WARNING)
 @cloup.constraint(If(IsSet('dump_incomplete_flows'), then=require_one.hidden()), ['output_csv', ])
 @cloup.version_option(version=__version__)
 def main(
-        interface, pfile, classifier, output_csv, dump_incomplete_flows, workers,
+        interface, pfile, classifier, output_csv, dump_incomplete_flows, workers, flow_timeout,
         delay_millisecond, keep_flows, per_packet
 ):
     flow_deque = deque(maxlen=keep_flows)
@@ -57,7 +59,8 @@ def main(
         classifier_module=classifier,
         flow_deque=flow_deque,
         sniffing_delay=delay_millisecond,
-        per_packet=per_packet
+        per_packet=per_packet,
+        flow_timeout=flow_timeout,
     )
 
     webserver = BroadcastServer(queue=flow_deque, port=9400)

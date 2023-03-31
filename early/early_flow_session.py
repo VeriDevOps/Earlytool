@@ -78,7 +78,7 @@ class EarlyFlowSession(FlowSession):
 
 
 def generate_session_class(output_mode, dump_incomplete_flows, nb_workers,
-                           classifier_path, flow_deque, sniffing_delay, per_packet):
+                           classifier_path, flow_deque, sniffing_delay, per_packet, flow_timeout):
     return type(
         "NewFlowSession",
         (EarlyFlowSession,),
@@ -92,5 +92,7 @@ def generate_session_class(output_mode, dump_incomplete_flows, nb_workers,
             "flow_deque": flow_deque,
             "sniffing_delay": sniffing_delay,
             "per_packet": per_packet,
+            "dump_packet_indexes": True,
+            "flow_timeout": flow_timeout,
         },
     )

@@ -9,8 +9,8 @@ from cicflowmeter.features.packet_time import PacketTime
 class EarlyFlow(Flow):
     """This class summarizes the values of the features of the network flows"""
 
-    def __init__(self, packet: Any, direction: Enum, fid=0):
-        super(EarlyFlow, self).__init__(packet, direction, fid)
+    def __init__(self, *args, **kwargs):
+        super(EarlyFlow, self).__init__(*args, **kwargs)
         self.model_prediction = None
 
     def to_dict(self) -> dict:
