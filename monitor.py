@@ -21,6 +21,8 @@ cic_logger.setLevel(logging.WARNING)
     cloup.option("-f", "--pfile", help="Analyze data from a PCAP file.",
                  type=cloup.Path(dir_okay=False, exists=True, readable=True), multiple=False)
 )
+@cloup.option("-b", "--bpf-filter", "bpf_filter", type=str, help="Filter network traffic using BPFs.",
+              default="ip and (tcp or udp)", show_default=True)
 @cloup.option("-c", "--classifier", default="random_classifier", show_default=True,
               help="Path to a classifier python module that will be used for making predictions. "
                    "If the module exists in the early/classifier folder, "
@@ -44,7 +46,7 @@ cic_logger.setLevel(logging.WARNING)
 @cloup.constraint(If(IsSet('dump_incomplete_flows'), then=require_one.hidden()), ['output_csv', ])
 @cloup.version_option(version=__version__)
 def main(
-        interface, pfile, classifier, output_csv, dump_incomplete_flows, workers, flow_timeout,
+        interface, pfile, bpf_filter, classifier, output_csv, dump_incomplete_flows, workers, flow_timeout,
         delay_millisecond, keep_flows, per_packet
 ):
     flow_deque = deque(maxlen=keep_flows)
@@ -56,6 +58,7 @@ def main(
         dump_incomplete_flows=dump_incomplete_flows,
         nb_workers=workers,
         # output_file=output,
+        bpf_filter=bpf_filter,
         classifier_module=classifier,
         flow_deque=flow_deque,
         sniffing_delay=delay_millisecond,
@@ -77,6 +80,8 @@ def main(
         logger.info("Exiting...")
         if not stopped:
             sniffer.stop()
+    except OSError as err:
+        logger.error(str(err))
     finally:
         sniffer.join()
         webserver.stopServer()

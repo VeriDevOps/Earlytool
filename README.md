@@ -24,6 +24,7 @@ Usage: early_monitor [OPTIONS]
 Options:
   -i, --interface TEXT      Analyze live data from the network interface.
   -f, --pfile FILE          Analyze data from a PCAP file.
+  -b, --bpf-filter TEXT     Filter network traffic using BPFs.  [default: ip and (tcp or udp)]
   -c, --classifier FILE     Path to a classifier python module that will be used for making predictions. If the module exists in the early/classifier folder, then just provide the name of module without '.py'.  [default: random_classifier]
   -o, --output-csv          output completed flows as csv
   --in                      Dump incomplete flows to the csv file before existing the program.

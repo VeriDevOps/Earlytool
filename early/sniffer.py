@@ -25,7 +25,7 @@ def get_classifier_path(classifier_path):
 
 
 def create_sniffer(
-        input_file, input_interface, output_mode, dump_incomplete_flows, nb_workers,
+        input_file, input_interface, output_mode, dump_incomplete_flows, nb_workers, bpf_filter,
         classifier_module, flow_deque, sniffing_delay, per_packet, flow_timeout
 ):
     assert (input_file is None) ^ (input_interface is None)
@@ -48,7 +48,7 @@ def create_sniffer(
 
         return AsyncSniffer(
             offline=input_file,
-            filter="ip and (tcp or udp)",
+            filter=bpf_filter,
             prn=None,
             session=NewFlowSession,
             store=False,
@@ -56,7 +56,7 @@ def create_sniffer(
     else:
         return AsyncSniffer(
             iface=input_interface,
-            filter="ip and (tcp or udp)",
+            filter=bpf_filter,
             # filter="ip and tcp",
             prn=None,
             session=NewFlowSession,
