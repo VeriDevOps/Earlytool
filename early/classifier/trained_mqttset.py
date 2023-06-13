@@ -8,9 +8,12 @@ class EarlyClassifier(BaseClassifier):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.model = load_model(self.current_dir / "model_1dcnn_0109-145711_2.h5", compile=False)
-        self.max_header_size = 50
-        self.max_payload_size = 2000
+        # self.model = load_model(self.current_dir / "model_1dcnn_0109-145711_2.h5", compile=False)
+        self.model = load_model(self.current_dir / "model_gru_mqttset_0612-164457_10.h5", compile=False)
+        # self.model = load_model(self.current_dir / "model_1dcnn_0309-031757_full.h5", compile=False)
+        # self.model = load_model(self.current_dir / "model_1dcnn_0309-031757_checkpoint.h5", compile=False)
+        self.max_header_size = 44
+        self.max_payload_size = 500
         self.padding_position = "post"
         self.label_code = [
             "Normal",
