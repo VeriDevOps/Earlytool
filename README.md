@@ -1,9 +1,11 @@
 # Earlytool
 
 ## Description
+
 Repo for Early Tool
 
 ## Installation
+
 It requires 3.6+ version of Python.
 
 ```sh
@@ -13,9 +15,11 @@ python setup.py install
 ```
 
 ## Usage
+
 It has two main components which should be executed in separate console windows.
 
 ### 1) Monitor
+
 This component reads packets either from a PCAP file or a network interface. It constructs flows and get corresponding predictions from a given model. It runs a HTTP server which can be used to get fetch flows information.
 
 ```sh
@@ -45,16 +49,61 @@ Constraints:
 **PS:** On linux systems you may need to install the `libpcap` library and `tcpdump` software. On Windows, you need to install [Npcap](https://npcap.com/#download) and [WinDump](https://github.com/hsluoyz/WinDump/releases) to run the monitor.
 
 Read packets from a PCAP file:
+
 ```sh
-early_monitor -f /home/user/earlytool/example_pcap/traffic_5f_ni.pcap
+python monitor.py -f /home/user/earlytool/example_pcap/traffic_5f_ni.pcap
 ```
 
 Or capture packets from a network interface: (**need root permission**)
+
 ```sh
-sudo early_monitor -i eno1
+sudo python monitor.py -i eno1
+```
+
+#### REST API
+
+The API will return a JSON containing the information and detection results regarding all the flows observed until the given `last_time` parameter value.
+
+**Request:**
+
+```
+GET http://127.0.0.1:9400/status?last_time=0.0
+```
+
+- `last_time`: (float) the time in seconds since the epoch as a floating point number also known as Unix time.
+
+**Response:**
+
+```json
+{
+  "flows": [
+    {
+      "name": "Flow 0",
+      "dest_ip": "131.253.61.98",
+      "src_ip": "192.168.10.15",
+      "length": 5,
+      "prediction": [
+        39,
+        "XSS"
+      ]
+    },
+    {
+      "name": "Flow 1",
+      "dest_ip": "192.168.10.50",
+      "src_ip": "172.16.0.1",
+      "length": 2,
+      "prediction": [
+        49,
+        "Normal"
+      ]
+    }
+  ],
+  "latest_timestamp": 1695910814.315083
+}
 ```
 
 ### 2) Command Line Interface Display
+
 This component fetches results from the monitor and displays flows in the command line.
 
 ```sh
@@ -78,15 +127,23 @@ Options:
 1) Run the **display** to show 50 recently updated flows and update the results after every 500 milliseconds.
 
 ```sh
+python display.py -s 50 -r 500 -w 40 -a 50 
+```
+Or
+```sh
 early_display -s 50 -r 500 -w 40 -a 50 
 ```
 
 ![monitor's output in the terminal](./doc_images/term_display.svg)
 
-
 2) Run the **monitor** to read every packet from the given PCAP file with a delay of 1000 milliseconds and use a trained model to get predictions:
+
 ```sh
-early_monitor -f example_pcap/traffic_5f_ni.pcap -c trained_classifier -d 1000
+python monitor.py -f example_pcap/traffic_5f_ni.pcap -c trained_cicids17 -d 1000
+```
+Or
+```sh
+early_monitor -f example_pcap/traffic_5f_ni.pcap -c trained_cicids17 -d 1000
 ```
 
 ![monitor's output in the terminal](./doc_images/term_monitor.svg)
