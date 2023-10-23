@@ -112,12 +112,16 @@ Usage: early_display [OPTIONS]
 Options:
   -u, --url-early TEXT      URL endpoint to get updates from Early tool. [default: 0.0.0.0:9400]
   -w, --warning-threshold FLOAT RANGE
-                            Warning threshold from 0 to 100 w.r.t. the confidence score.  [default: 40.0; 0<=x<=100]
+                            Warning threshold from 0 to 100 w.r.t. the
+                            confidence score.  [default: 40.0; 0<=x<=100]
   -a, --alert-threshold FLOAT RANGE
-                            Alert threshold from 0 to 100 w.r.t. the confidence score.  [default: 50.0; 0<=x<=100]
+                            Alert threshold from 0 to 100 w.r.t. the confidence
+                            score.  [default: 50.0; 0<=x<=100]
   -r, --refresh-millisecond INTEGER
-                            Refresh results after every r milliseconds. [default: 250]
+                            Refresh results after every r milliseconds.
+                            [default: 250]
   -s, --show-flows INTEGER  Maximum number of flows to display.  [default: 100]
+  -l, --write-log           Dump flows to a log file.
   --version                 Show the version and exit.
   --help                    Show this message and exit.
 ```

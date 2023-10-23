@@ -1,4 +1,7 @@
+import csv
 import time
+from pathlib import Path
+from collections import defaultdict
 from rich.live import Live
 from rich.table import Table, Column
 
@@ -6,6 +9,41 @@ from early.display.base import BaseDisplay
 
 
 class Display(BaseDisplay):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.__csv_file_path = None
+
+    @property
+    def csv_file_path(self):
+        if self.__csv_file_path is None:
+            # Defining the path of the CSV file
+            self.__csv_file_path = Path.cwd() / f"display_flows_{time.strftime('%m%d-%H%M%S')}.csv"
+
+            print(f"Dumping flows to {self.__csv_file_path}")
+        return self.__csv_file_path
+
+    def write_csv_line(self, data):
+        flows_dump = []
+        for key in data:
+            f = {}
+            f["timestamp"] = self.last_time_updated
+            f["name"] = data[key]['name']
+            f["src_ip"] = data[key]['src_ip']
+            f["dest_ip"] = data[key]['dest_ip']
+            f["length"] = data[key]['length']
+            f["score"] = data[key]['prediction'][0]
+            f["detection"] = data[key]['prediction'][1]
+            flows_dump.append(f)
+
+        with open(self.csv_file_path, "a+") as output:
+            #csv_writer = csv.writer(output)
+            csv_writer = csv.DictWriter(output, fieldnames=flows_dump[0].keys())
+            if output.tell() == 0:
+                # the file is just created, write headers
+                csv_writer.writeheader()
+
+            csv_writer.writerows(flows_dump)
+
     def get_row_style(self, prediction):
         styles = []
         if prediction[1] != "Normal":
@@ -73,4 +111,7 @@ class Display(BaseDisplay):
                             f"{style}{self.get_remarks(f['prediction'])}",
                         )
                     live.update(table, refresh=True)
+                    
+                    if self.log_flows and data["flows"]:
+                        self.write_csv_line(self.latest_n_flows)
                 time.sleep(self.refresh_wait)

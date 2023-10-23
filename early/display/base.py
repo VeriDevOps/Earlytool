@@ -5,12 +5,13 @@ from early.utils import DequeDict
 
 
 class BaseDisplay:
-    def __init__(self, early_host, wt, at, refresh_millisecond, max_nb_flow_display):
+    def __init__(self, early_host, wt, at, refresh_millisecond, max_nb_flow_display, log_flows):
         self.early_host = early_host
         self.refresh_wait = refresh_millisecond / 1000.0
         self.wt = wt
         self.at = at
         self.last_time_updated = 0.0
+        self.log_flows = log_flows
 
         self.latest_n_flows = DequeDict(maxlen=max_nb_flow_display)
         self.recently_updated_flows = []

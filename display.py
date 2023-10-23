@@ -15,14 +15,17 @@ from early.display.cli_display import Display
               help="Refresh results after every r milliseconds.")
 @cloup.option("-s", "--show-flows", type=int, default=100, show_default=True,
               help="Maximum number of flows to display.")
+@cloup.option("-l", "--write-log", is_flag=True,
+              help="Dump flows to a log file.")
 @cloup.version_option(version=__version__)
-def main(url_early, warning_threshold, alert_threshold, refresh_millisecond, show_flows):
+def main(url_early, warning_threshold, alert_threshold, refresh_millisecond, show_flows, write_log):
     display = Display(
         url_early,
         warning_threshold,
         alert_threshold,
         refresh_millisecond,
         show_flows,
+        write_log
     )
 
     try:
