@@ -81,6 +81,9 @@ GET http://127.0.0.1:9400/status?last_time=0.0
       "name": "Flow 0",
       "dest_ip": "131.253.61.98",
       "src_ip": "192.168.10.15",
+      "src_port": 49429, 
+      "dst_port": 80,
+      "last_updated": 1499342476.61973,
       "length": 5,
       "prediction": [
         39,
@@ -91,6 +94,9 @@ GET http://127.0.0.1:9400/status?last_time=0.0
       "name": "Flow 1",
       "dest_ip": "192.168.10.50",
       "src_ip": "172.16.0.1",
+      "src_port": 49439, 
+      "dst_port": 80,
+      "last_updated": 1499342478.61973,
       "length": 2,
       "prediction": [
         49,
@@ -118,8 +124,8 @@ Options:
                             Alert threshold from 0 to 100 w.r.t. the confidence
                             score.  [default: 50.0; 0<=x<=100]
   -r, --refresh-millisecond INTEGER
-                            Refresh results after every r milliseconds.
-                            [default: 250]
+                            Refresh results after every r milliseconds. [default: 250]
+  -f, --timestamp-format TEXT  Format the timestamp in the Updated at column. [default: %y-%m-%d %H:%M:%S]
   -s, --show-flows INTEGER  Maximum number of flows to display.  [default: 100]
   -l, --write-log           Dump flows to a log file.
   --version                 Show the version and exit.

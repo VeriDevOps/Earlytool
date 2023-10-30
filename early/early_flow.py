@@ -1,6 +1,3 @@
-from enum import Enum
-from typing import Any
-
 from cicflowmeter.flow import Flow
 from cicflowmeter.features.packet_count import PacketCount
 from cicflowmeter.features.packet_time import PacketTime
@@ -18,6 +15,9 @@ class EarlyFlow(Flow):
             "name": self.name,
             "dest_ip": self.dest_ip,
             "src_ip": self.src_ip,
+            "src_port": self.src_port,
+            "dst_port": self.dest_port,
+            "last_updated": float(self.packets[-1][0].time),
             "length": len(self.packets),
             "prediction": self.model_prediction,
         }

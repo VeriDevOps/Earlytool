@@ -1,7 +1,7 @@
 import csv
 import time
 from pathlib import Path
-from collections import defaultdict
+from datetime import datetime
 from rich.live import Live
 from rich.table import Table, Column
 
@@ -25,18 +25,18 @@ class Display(BaseDisplay):
     def write_csv_line(self, data):
         flows_dump = []
         for key in data:
-            f = {}
-            f["timestamp"] = self.last_time_updated
-            f["name"] = data[key]['name']
-            f["src_ip"] = data[key]['src_ip']
-            f["dest_ip"] = data[key]['dest_ip']
-            f["length"] = data[key]['length']
-            f["score"] = data[key]['prediction'][0]
-            f["detection"] = data[key]['prediction'][1]
+            f = {"timestamp": self.last_time_updated,
+                 "name": data[key]['name'],
+                 "src_ip": data[key]['src_ip'],
+                 "dest_ip": data[key]['dest_ip'],
+                 "src_port": data[key]['src_port'],
+                 "dst_port": data[key]['dst_port'],
+                 "length": data[key]['length'],
+                 "score": data[key]['prediction'][0],
+                 "detection": data[key]['prediction'][1]}
             flows_dump.append(f)
 
         with open(self.csv_file_path, "a+") as output:
-            #csv_writer = csv.writer(output)
             csv_writer = csv.DictWriter(output, fieldnames=flows_dump[0].keys())
             if output.tell() == 0:
                 # the file is just created, write headers
@@ -92,8 +92,9 @@ class Display(BaseDisplay):
 
                 if self.latest_n_flows:
                     table = Table(
-                        "Flow ID", "Source IP", "Destination IP", "Length", "Prediction",
-                        Column(header="Confidence", justify="right"), "Remarks",
+                        "Flow ID", "Src IP", "Src Port", "Dst IP",
+                        "Dst Port", "Length", "Prediction", 
+                        Column(header="Confidence", justify="right"), "Remarks", "Updated at",
                         title=f"Flows count: {len(self.latest_n_flows)}",
                     )
 
@@ -104,14 +105,17 @@ class Display(BaseDisplay):
                         table.add_row(
                             f"{style}{f['name']}",
                             f"{style}{f['src_ip']}",
+                            f"{style}{f['src_port']}",
                             f"{style}{f['dest_ip']}",
+                            f"{style}{f['dst_port']}",
                             f"{style}{f['length']}",
                             f"{style}{f['prediction'][1]}",
                             f"{style}{f['prediction'][0]}",
                             f"{style}{self.get_remarks(f['prediction'])}",
+                            f"{style}{datetime.fromtimestamp(f['last_updated']).strftime(self.timestamp_format)}",
                         )
                     live.update(table, refresh=True)
-                    
+
                     if self.log_flows and data["flows"]:
                         self.write_csv_line(self.latest_n_flows)
                 time.sleep(self.refresh_wait)

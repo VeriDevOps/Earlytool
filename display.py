@@ -13,17 +13,20 @@ from early.display.cli_display import Display
               help="Alert threshold from 0 to 100 w.r.t. the confidence score.")
 @cloup.option("-r", "--refresh-millisecond", type=int, default=250, show_default=True,
               help="Refresh results after every r milliseconds.")
+@cloup.option("-f", "--timestamp-format", type=str, default="%y-%m-%d %H:%M:%S", show_default=True,
+              help="Format the timestamp in the Updated at column.")
 @cloup.option("-s", "--show-flows", type=int, default=100, show_default=True,
               help="Maximum number of flows to display.")
 @cloup.option("-l", "--write-log", is_flag=True,
               help="Dump flows to a log file.")
 @cloup.version_option(version=__version__)
-def main(url_early, warning_threshold, alert_threshold, refresh_millisecond, show_flows, write_log):
+def main(url_early, warning_threshold, alert_threshold, refresh_millisecond, timestamp_format, show_flows, write_log):
     display = Display(
         url_early,
         warning_threshold,
         alert_threshold,
         refresh_millisecond,
+        timestamp_format,
         show_flows,
         write_log
     )
