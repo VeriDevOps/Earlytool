@@ -18,6 +18,8 @@ class EarlyFlow(Flow):
             "name": self.name,
             "dest_ip": self.dest_ip,
             "src_ip": self.src_ip,
+            "src_port": self.src_port,
+            "dst_port": self.dest_port,
             "length": len(self.packets),
             "prediction": self.model_prediction,
         }

@@ -1,7 +1,7 @@
 requests
 protobuf==3.19.5
 numpy==1.19.5
-scapy==2.5.5
+scapy==2.5.0
 tensorflow==2.6.2
 scipy>=1.5.4
 rich>=12

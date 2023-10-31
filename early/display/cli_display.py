@@ -30,6 +30,8 @@ class Display(BaseDisplay):
             f["name"] = data[key]['name']
             f["src_ip"] = data[key]['src_ip']
             f["dest_ip"] = data[key]['dest_ip']
+            f["src_port"] = data[key]['src_port']
+            f["dest_port"] = data[key]['dest_port']
             f["length"] = data[key]['length']
             f["score"] = data[key]['prediction'][0]
             f["detection"] = data[key]['prediction'][1]
@@ -92,7 +94,7 @@ class Display(BaseDisplay):
 
                 if self.latest_n_flows:
                     table = Table(
-                        "Flow ID", "Source IP", "Destination IP", "Length", "Prediction",
+                        "Flow ID", "Source IP", "Source Port", "Destination IP", "Destination Port", "Length", "Prediction",
                         Column(header="Confidence", justify="right"), "Remarks",
                         title=f"Flows count: {len(self.latest_n_flows)}",
                     )
@@ -104,7 +106,9 @@ class Display(BaseDisplay):
                         table.add_row(
                             f"{style}{f['name']}",
                             f"{style}{f['src_ip']}",
+                            f"{style}{f['src_port']}",
                             f"{style}{f['dest_ip']}",
+                            f"{style}{f['dst_port']}",
                             f"{style}{f['length']}",
                             f"{style}{f['prediction'][1]}",
                             f"{style}{f['prediction'][0]}",
