@@ -37,7 +37,9 @@ Options:
   -d, --delay-millisecond INTEGER
                             Add a delay of d milliseconds after sniffing every packet.  [default: 0]
   -k, --keep-flows INTEGER  Maximum number of most recent flows to keep in memory. [default: unlimited]
-  -p, --per-packet          Get a prediction per packet instead of per flow.
+  -p, --packets-per-detection INTEGER
+                            Maximum number of packets in a flow used for detection. [default: unlimited]
+  -r, --per-packet          Get a prediction per packet instead of per flow.
   --version                 Show the version and exit.
   --help                    Show this message and exit.
 
