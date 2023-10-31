@@ -39,13 +39,15 @@ class BaseDisplay:
                     print(f"Early at {self.early_host} is stopped.")
                     break
 
-        self.just_started = False
         if is_early_okay:
+            if self.just_started:
+                print("Connected!")
             if r.status_code != 200:
                 print(f"Response status code from Early is not 200. It is {r.status_code}.")
                 is_early_okay = False
             else:
                 data = r.json()
+        self.just_started = False
 
         return is_early_okay, data
 

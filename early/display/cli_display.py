@@ -25,7 +25,7 @@ class Display(BaseDisplay):
     def write_csv_line(self, data):
         flows_dump = []
         for key in data:
-            f = {"timestamp": self.last_time_updated,
+            f = {"updated_at": datetime.fromtimestamp(data[key]['last_updated']),
                  "name": data[key]['name'],
                  "src_ip": data[key]['src_ip'],
                  "dest_ip": data[key]['dest_ip'],
@@ -93,7 +93,7 @@ class Display(BaseDisplay):
                 if self.latest_n_flows:
                     table = Table(
                         "Flow ID", "Src IP", "Src Port", "Dst IP",
-                        "Dst Port", "Length", "Prediction", 
+                        "Dst Port", "Length", "Prediction",
                         Column(header="Confidence", justify="right"), "Remarks", "Updated at",
                         title=f"Flows count: {len(self.latest_n_flows)}",
                     )

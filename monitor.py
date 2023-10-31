@@ -41,13 +41,15 @@ cic_logger.setLevel(logging.WARNING)
               help="Add a delay of d milliseconds after sniffing every packet.")
 @cloup.option("-k", "--keep-flows", type=int, default=None,
               help="Maximum number of most recent flows to keep in memory. [default: unlimited]")
-@cloup.option("-p", "--per-packet", is_flag=True,
+@cloup.option("-p", "--packets-per-detection", type=int, default=None,
+              help="Maximum number of packets in a flow used for detection. [default: unlimited]")
+@cloup.option("-r", "--per-packet", is_flag=True,
               help="Get a prediction per packet instead of per flow.")
 @cloup.constraint(If(IsSet('dump_incomplete_flows'), then=require_one.hidden()), ['output_csv', ])
 @cloup.version_option(version=__version__)
 def main(
         interface, pfile, bpf_filter, classifier, output_csv, dump_incomplete_flows, workers, flow_timeout,
-        delay_millisecond, keep_flows, per_packet
+        delay_millisecond, keep_flows, packets_per_detection, per_packet
 ):
     flow_deque = deque(maxlen=keep_flows)
 
@@ -64,6 +66,7 @@ def main(
         sniffing_delay=delay_millisecond,
         per_packet=per_packet,
         flow_timeout=flow_timeout,
+        packets_per_detection=packets_per_detection,
     )
 
     webserver = BroadcastServer(queue=flow_deque, port=9400)

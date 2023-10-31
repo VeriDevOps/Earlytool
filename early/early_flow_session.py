@@ -67,7 +67,10 @@ class EarlyFlowSession(FlowSession):
                 print(f"No. of packets analyzed: {self.packets_count}", end="\r")
             # print(f"Packets {self.packets_count}")
 
-            flow.model_prediction = self.classifier.predict(flow.packets)
+            if self.packets_per_detection:
+                flow.model_prediction = self.classifier.predict(flow.packets[:self.packets_per_detection])
+            else:
+                flow.model_prediction = self.classifier.predict(flow.packets)
             # print(f"fin flag: {flow.get_data()['fin_flag_cnt']}")
 
             self.flow_deque.appendleft(flow.to_dict())
@@ -77,8 +80,9 @@ class EarlyFlowSession(FlowSession):
         return result_tup
 
 
-def generate_session_class(output_mode, dump_incomplete_flows, nb_workers,
-                           classifier_path, flow_deque, sniffing_delay, per_packet, flow_timeout):
+def generate_session_class(
+        output_mode, dump_incomplete_flows, nb_workers, classifier_path, flow_deque,
+        sniffing_delay, per_packet, flow_timeout, packets_per_detection):
     return type(
         "NewFlowSession",
         (EarlyFlowSession,),
@@ -94,5 +98,6 @@ def generate_session_class(output_mode, dump_incomplete_flows, nb_workers,
             "per_packet": per_packet,
             "dump_packet_indexes": True,
             "flow_timeout": flow_timeout,
+            "packets_per_detection": packets_per_detection,
         },
     )

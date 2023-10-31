@@ -26,7 +26,7 @@ def get_classifier_path(classifier_path):
 
 def create_sniffer(
         input_file, input_interface, output_mode, dump_incomplete_flows, nb_workers, bpf_filter,
-        classifier_module, flow_deque, sniffing_delay, per_packet, flow_timeout
+        classifier_module, flow_deque, sniffing_delay, per_packet, flow_timeout, packets_per_detection
 ):
     assert (input_file is None) ^ (input_interface is None)
 
@@ -39,7 +39,7 @@ def create_sniffer(
 
     NewFlowSession = generate_session_class(
         output_mode, dump_incomplete_flows, nb_workers, classifier_path, flow_deque,
-        sniffing_delay, per_packet, flow_timeout)()
+        sniffing_delay, per_packet, flow_timeout, packets_per_detection)()
 
     if input_file is not None:
         if not os.path.exists(input_file):
