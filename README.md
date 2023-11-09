@@ -1,8 +1,14 @@
-# Earlytool
+# The EARLY tool
 
 ## Description
+The main goal of the EARLY tool is to monitor the network traffic in realtime against known security attacks for different application domains and deploy countermeasures before the attacks are completed. The main feature of this tool is to detect ongoing attacks with high accuracy.
 
-Repo for Early Tool
+The tool has three main components: 
+- a training module is used to train neural network models using various datasets for different application domains; 
+- a library of attack models is used to stored trained models
+- a monitoring module is used to monitor the corresponding type of network traffic. Whenever attacks are detected, automatic countermeasures can
+be deployed based on predefined triggers.
+
 
 ## Installation
 
