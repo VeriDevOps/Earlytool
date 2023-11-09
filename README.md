@@ -159,3 +159,21 @@ early_monitor -f example_pcap/traffic_5f_ni.pcap -c trained_cicids17 -d 1000
 ```
 
 ![monitor's output in the terminal](./doc_images/term_monitor.svg)
+
+## Publications
+
+EARLY: A Tool for Real-Time Security Attack Detection.
+Ahmad, T., Truscan, D. & Vain, J., Dec 2023, CyberSecurity in a DevOps Environment : From Requirements to Monitoring. Sadovykh, A., Truscan, D., Mallouli, W., Cavalli, A. R., Seceleanu, C. & Bagnato, A. (eds.). Springer, p. 225-252
+https://research.abo.fi/en/publications/early-a-tool-for-real-time-security-attack-detection 
+
+Efficient Early Anomaly Detection of Network Security Attacks Using Deep Learning.
+Ahmad, T. & Truscan, D., Aug 2023, 2023 IEEE International Conference on Cyber Security and Resilience (CSR). IEEE
+https://research.abo.fi/en/publications/efficient-early-anomaly-detection-of-network-security-attacks-usi
+
+Preliminary Results in Using Attention for Increasing Attack Identification Efficiency.
+Ahmad, T., Truscan, D. & Vain, J., May 2023, 2023 IEEE International Conference on Software Testing, Verification and Validation. IEEE, p. 159-164 6 p. (IEEE International Conference on Software Testing, Verification and Validation Workshops).
+https://research.abo.fi/en/publications/preliminary-results-in-using-attention-for-increasing-attack-iden
+
+Early Detection of Network Attacks Using Deep Learning
+Ahmad, T., Truscan, D., Vain, J. & Porres, I., 2022, 2022 IEEE International Conference on Software Testing, Verification and Validation Workshops (ICSTW). IEEE, p. 30-39 10 p.
+https://research.abo.fi/en/publications/early-detection-of-network-attacks-using-deep-learning
