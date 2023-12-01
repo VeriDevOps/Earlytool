@@ -91,15 +91,14 @@ class Display(BaseDisplay):
                 # if updated_flows:
                 #     self.recently_updated_flows = updated_flows
 
-                if self.just_started and is_early_okay:
-                    #todo show table header
-                    table = Table(
-                        "Flow ID", "Src IP", "Src Port", "Dst IP",
-                        "Dst Port", "Length", "Prediction",
-                        Column(header="Confidence", justify="right"), "Remarks", "Updated at",
-                        title=f"Flows count: {len(self.latest_n_flows)}",
-                    )
-                    live.update(table, refresh=True)
+
+                table = Table(
+                    "Flow ID", "Src IP", "Src Port", "Dst IP",
+                    "Dst Port", "Length", "Prediction",
+                    Column(header="Confidence", justify="right"), "Remarks", "Updated at",
+                    title=f"Flows count: {len(self.latest_n_flows)}",
+                )
+                live.update(table, refresh=True)
 
                 self.just_started = False
 
